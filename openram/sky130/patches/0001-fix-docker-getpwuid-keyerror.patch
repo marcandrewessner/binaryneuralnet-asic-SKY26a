@@ -1,0 +1,17 @@
+--- a/compiler/globals.py
++++ b/compiler/globals.py
+@@ -425,7 +425,12 @@ def init_openram(config_file, is_unit_test=False):
+     # Use a unique temp subdirectory if multithreaded
+     if OPTS.num_threads > 1 or OPTS.openram_temp == "/tmp":
+         # Make a unique subdir
+-        _user = getpass.getuser()
++        # In Docker containers the uid may not have a /etc/passwd entry,
++        # causing getpass.getuser() to raise KeyError.  Fall back to the
++        # numeric uid so temp directory creation never fails.
++        try:
++            _user = getpass.getuser()
++        except KeyError:
++            _user = "uid{}".format(os.getuid())
+         tempdir = "/openram_{0}_{1}_temp".format(_user,
+                                                  os.getpid())
+         # Only add the unique subdir one time

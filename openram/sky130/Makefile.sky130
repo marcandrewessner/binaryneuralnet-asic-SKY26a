@@ -1,0 +1,231 @@
+# Makefile.sky130 — OpenRAM sky130 compilation targets
+#
+# Always invoke from the REPO ROOT with -f:
+#
+#   make -f sky130/Makefile.sky130 help
+#   make -f sky130/Makefile.sky130 check-env
+#   make -f sky130/Makefile.sky130 compile
+#   make -f sky130/Makefile.sky130 compile-rom
+#   make -f sky130/Makefile.sky130 drc-only
+#   make -f sky130/Makefile.sky130 clean
+#
+# All variables have auto-detected defaults and can be overridden on the
+# command line:
+#
+#   make -f sky130/Makefile.sky130 compile CONFIG=sky130/configs/my_sram.py
+#   make -f sky130/Makefile.sky130 compile TOOL_BIN=/usr/local/bin
+#   make -f sky130/Makefile.sky130 compile PDK_ROOT=/path/to/pdks
+#
+# See 'make -f sky130/Makefile.sky130 help' for full option reference.
+
+# ── OPENRAM ROOT ──────────────────────────────────────────────────────────────
+# Derived from this Makefile's own location, NOT from $(pwd) or git.
+# sky130/Makefile.sky130  →  parent directory = repo root.
+# This is robust regardless of where 'make' is invoked from.
+_MK_DIR      := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+OPENRAM_ROOT ?= $(abspath $(_MK_DIR)/..)
+
+# ── PYTHON ────────────────────────────────────────────────────────────────────
+PYTHON       ?= python3
+
+# ── CONFIG FILES ──────────────────────────────────────────────────────────────
+CONFIG     ?= sky130/configs/sram_8x8_sky130.py
+ROM_CONFIG ?= sky130/configs/test_rom_sky130.py
+
+# ── TOOL PATH AUTO-DETECTION ──────────────────────────────────────────────────
+# Checked in priority order: TOOL_BIN override → Docker → common system paths.
+_TOOL_SEARCH := /foss/tools/bin /usr/local/bin /opt/homebrew/bin /usr/bin
+ifeq ($(TOOL_BIN),)
+  TOOL_BIN := $(firstword \
+    $(foreach d,$(_TOOL_SEARCH),$(if $(wildcard $(d)/klayout),$(d),)) \
+    /usr/local/bin)
+endif
+export PATH := $(TOOL_BIN):$(PATH)
+
+# ── PDK ROOT AUTO-DETECTION ───────────────────────────────────────────────────
+# Checked in priority order: PDK_ROOT override → bundled ciel/ → volare → Docker.
+ifeq ($(PDK_ROOT),)
+  _PDK_SEARCH := \
+    $(OPENRAM_ROOT)/ciel \
+    $(HOME)/.volare \
+    /foss/pdk
+  PDK_ROOT := $(firstword \
+    $(foreach d,$(_PDK_SEARCH),$(if $(wildcard $(d)/sky130A),$(d),)))
+endif
+ifneq ($(PDK_ROOT),)
+  export PDK_ROOT
+endif
+
+# ── COMPILER ENVIRONMENT ──────────────────────────────────────────────────────
+# Export these so the child Python process always uses the local patched code,
+# even if a system-installed 'openram' package exists in site-packages.
+export OPENRAM_HOME := $(OPENRAM_ROOT)/compiler
+export OPENRAM_TECH := $(OPENRAM_ROOT)/technology/sky130/
+
+# ── DERIVED ───────────────────────────────────────────────────────────────────
+CONFIG_BASE     := $(notdir $(basename $(CONFIG)))
+ROM_CONFIG_BASE := $(notdir $(basename $(ROM_CONFIG)))
+
+# ── TARGETS ───────────────────────────────────────────────────────────────────
+.PHONY: all compile compile-rom drc-only patch check-env clean veryclean help
+
+all: compile
+
+## compile      — compile an SRAM: GDS + SP + LEF + LIB + DRC + LVS
+compile:
+	@echo "==> OPENRAM_ROOT : $(OPENRAM_ROOT)"
+	@echo "==> OPENRAM_HOME : $(OPENRAM_HOME)"
+	@echo "==> PDK_ROOT     : $(PDK_ROOT:-=not set)"
+	@echo "==> TOOL_BIN     : $(TOOL_BIN)"
+	@echo "==> Config       : $(CONFIG)"
+	@echo ""
+	cd $(OPENRAM_ROOT) && $(PYTHON) sram_compiler.py $(CONFIG)
+	@echo ""
+	@echo "==> Done. Outputs in temp/$(CONFIG_BASE).*"
+
+## compile-rom  — compile a ROM: GDS + SP + LEF + Verilog
+compile-rom:
+	@echo "==> OPENRAM_ROOT : $(OPENRAM_ROOT)"
+	@echo "==> OPENRAM_HOME : $(OPENRAM_HOME)"
+	@echo "==> PDK_ROOT     : $(PDK_ROOT:-=not set)"
+	@echo "==> TOOL_BIN     : $(TOOL_BIN)"
+	@echo "==> Config       : $(ROM_CONFIG)"
+	@echo ""
+	cd $(OPENRAM_ROOT) && $(PYTHON) rom_compiler.py $(ROM_CONFIG)
+	@echo ""
+	@echo "==> Done. Outputs in temp/$(ROM_CONFIG_BASE).*"
+
+## drc-only     — run KLayout DRC on an already-generated GDS (no recompile)
+drc-only:
+	@GDS=$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).gds; \
+	if [ ! -f "$$GDS" ]; then \
+		echo "ERROR: $$GDS not found — run 'make compile' first."; exit 1; \
+	fi; \
+	DRC_SCRIPT=$$(find $(OPENRAM_ROOT)/ciel -name "sky130A.lydrc" 2>/dev/null | head -1); \
+	if [ -z "$$DRC_SCRIPT" ] && [ -n "$(PDK_ROOT)" ]; then \
+		DRC_SCRIPT=$$(find "$(PDK_ROOT)" -name "sky130A.lydrc" 2>/dev/null | head -1); \
+	fi; \
+	if [ -z "$$DRC_SCRIPT" ]; then \
+		echo "ERROR: sky130A.lydrc not found."; \
+		echo "  Set PDK_ROOT=/path/to/pdks or ensure ciel/ is present."; \
+		exit 1; \
+	fi; \
+	echo "==> GDS       : $$GDS"; \
+	echo "==> Rule deck : $$DRC_SCRIPT"; \
+	echo ""; \
+	klayout -b -r "$$DRC_SCRIPT" \
+		-rd input="$$GDS" \
+		-rd report="$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).klayout.lyrdb" \
+		-rd thr=4; \
+	echo "==> Report: temp/$(CONFIG_BASE).klayout.lyrdb"
+
+## patch        — apply all sky130 patches to the local OpenRAM source
+patch:
+	@echo "==> Applying sky130 patches to $(OPENRAM_ROOT) ..."
+	@for p in $(OPENRAM_ROOT)/sky130/patches/*.patch; do \
+		echo "  $$p ..."; \
+		patch -p1 --forward --reject-file=/dev/null -d $(OPENRAM_ROOT) < "$$p" \
+			&& echo "    OK" || echo "    SKIP (already applied or conflict)"; \
+	done
+	@echo "==> Done."
+
+## check-env    — verify tools, PDK, and Python paths before compiling
+check-env:
+	@echo ""
+	@echo "OpenRAM sky130 — environment check"
+	@echo "==================================="
+	@echo ""
+	@echo "Paths:"
+	@echo "  OPENRAM_ROOT : $(OPENRAM_ROOT)"
+	@echo "  OPENRAM_HOME : $(OPENRAM_HOME)"
+	@echo "  OPENRAM_TECH : $(OPENRAM_TECH)"
+	@echo "  PDK_ROOT     : $(if $(PDK_ROOT),$(PDK_ROOT),NOT SET)"
+	@echo "  TOOL_BIN     : $(TOOL_BIN)"
+	@echo "  PYTHON       : $(PYTHON) ($(shell $(PYTHON) --version 2>&1))"
+	@echo ""
+	@echo "Compiler source:"
+	@if [ -f "$(OPENRAM_HOME)/../__init__.py" ]; then \
+		echo "  [OK]  local compiler found at $(OPENRAM_HOME)"; \
+	else \
+		echo "  [!!]  $(OPENRAM_HOME) not found — check OPENRAM_ROOT"; \
+	fi
+	@if [ -d "$(OPENRAM_TECH)" ]; then \
+		echo "  [OK]  sky130 technology at $(OPENRAM_TECH)"; \
+	else \
+		echo "  [!!]  $(OPENRAM_TECH) not found"; \
+	fi
+	@echo ""
+	@echo "EDA tools (in TOOL_BIN=$(TOOL_BIN)):"
+	@for tool in magic klayout netgen; do \
+		path=$$(command -v $$tool 2>/dev/null); \
+		if [ -n "$$path" ]; then \
+			echo "  [OK]  $$tool -> $$path"; \
+		else \
+			echo "  [!!]  $$tool NOT FOUND  →  set TOOL_BIN=<dir> or export PATH"; \
+		fi; \
+	done
+	@echo ""
+	@echo "PDK:"
+	@if [ -n "$(PDK_ROOT)" ] && [ -d "$(PDK_ROOT)/sky130A" ]; then \
+		echo "  [OK]  sky130A at $(PDK_ROOT)/sky130A"; \
+	else \
+		echo "  [!!]  sky130A not found  →  set PDK_ROOT=/path/to/pdks"; \
+		echo "        or install with: pip install volare && volare enable --pdk sky130 e8294524"; \
+	fi
+	@echo ""
+
+## clean        — remove generated files for the active CONFIG
+clean:
+	@echo "==> Cleaning temp/$(CONFIG_BASE).* ..."
+	@rm -f \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).gds \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).sp  \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).lef \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).lib \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).v   \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).sym \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).log \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).lvs.sp \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).klayout.lyrdb \
+		$(OPENRAM_ROOT)/temp/$(CONFIG_BASE).extracted.spice
+	@echo "==> Done."
+
+## veryclean    — remove the entire temp/ directory
+veryclean:
+	@echo "==> Removing $(OPENRAM_ROOT)/temp/ ..."
+	@rm -rf $(OPENRAM_ROOT)/temp/
+	@echo "==> Done."
+
+## help         — show this help message
+help:
+	@echo ""
+	@echo "OpenRAM sky130 Makefile"
+	@echo "  Invoke from the repo root with -f:"
+	@echo "  make -f sky130/Makefile.sky130 <target> [OPTION=value ...]"
+	@echo ""
+	@echo "Targets:"
+	@grep -E '^## ' $(lastword $(MAKEFILE_LIST)) | sed 's/^## /  /'
+	@echo ""
+	@echo "Options:"
+	@echo "  CONFIG      SRAM config .py   (default: sky130/configs/sram_8x8_sky130.py)"
+	@echo "  ROM_CONFIG  ROM config .py    (default: sky130/configs/test_rom_sky130.py)"
+	@echo "  PYTHON      Python binary     (default: python3)"
+	@echo "  TOOL_BIN    dir with magic/klayout/netgen  (auto-detected)"
+	@echo "  PDK_ROOT    root of sky130A PDK             (auto-detected)"
+	@echo ""
+	@echo "Current auto-detected values:"
+	@echo "  OPENRAM_ROOT = $(OPENRAM_ROOT)"
+	@echo "  TOOL_BIN     = $(TOOL_BIN)"
+	@echo "  PDK_ROOT     = $(if $(PDK_ROOT),$(PDK_ROOT),not found — set PDK_ROOT=...)"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make -f sky130/Makefile.sky130 compile"
+	@echo "  make -f sky130/Makefile.sky130 compile CONFIG=sky130/configs/sram_8x8_sky130.py"
+	@echo "  make -f sky130/Makefile.sky130 compile-rom"
+	@echo "  make -f sky130/Makefile.sky130 compile-rom ROM_CONFIG=sky130/configs/my_rom.py"
+	@echo "  make -f sky130/Makefile.sky130 drc-only"
+	@echo "  make -f sky130/Makefile.sky130 check-env"
+	@echo "  make -f sky130/Makefile.sky130 clean"
+	@echo "  make -f sky130/Makefile.sky130 TOOL_BIN=/usr/local/bin compile"
+	@echo "  make -f sky130/Makefile.sky130 PDK_ROOT=/path/to/pdks compile"
+	@echo ""

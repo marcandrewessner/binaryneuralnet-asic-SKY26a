@@ -1,0 +1,19 @@
+export PDK_ROOT=$(pwd)/ttsetup/pdk
+export PDK=sky130A
+export LIBRELANE_TAG=3.0.0rc1
+
+export OPENRAM_HOME="$(pwd)/openram/compiler"
+export OPENRAM_TECH="$(pwd)/openram/technology"
+export PYTHONPATH="$PYTHONPATH:$(pwd)"
+
+source $(pwd)/ttsetup/venv/bin/activate
+
+
+#
+# ================ HOW TO SETUP =================
+# (1) create venv using uv and install librelane
+# >>> https://tinytapeout.com/guides/local-hardening/
+# (2) clone the sky openram git as openram in root of project
+# >>> https://github.com/carloscl03/openram-sky130-fixes
+# >>> https://www.linkedin.com/feed/update/urn:li:activity:7444211257261580288/?originTrackingId=jY%2Fl8283d0pw%2BaQs3SK9EQ%3D%3D
+#

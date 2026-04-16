@@ -3,8 +3,8 @@ project:
   title:        "BNN MNIST Inference"      # Project title
   author:       "Marc-Andre"      # Your name
   discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  ""      # One line description of what your project does
-  language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
+  description:  "A fully pipelined hardware BNN inference engine that classifies MNIST digits by sequencing a quantized autoencoder (3 binary conv layers + 2 max-pool layers) through shared SRAM, followed by a combinational XGBoost decision tree, all generated from trained model weights via Jinja2 codegen and verified end-to-end in cocotb simulation against the Python reference."      # One line description of what your project does
+  language:     "SystemVerilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
   clock_hz:     0       # Clock frequency in Hz (or 0 if not applicable)
 
   # How many tiles your design occupies? A single tile is about 167x108 uM.

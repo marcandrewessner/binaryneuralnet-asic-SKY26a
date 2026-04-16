@@ -1,0 +1,15 @@
+--- a/compiler/modules/sram_1bank.py
++++ b/compiler/modules/sram_1bank.py
+@@ -1304,6 +1304,12 @@ class sram_1bank(design):
+
+                 y_offset = y_bottom - self.data_bus_size[port] + 2 * self.m3_pitch
++                # sky130: the write_driver_array has an M3 supply stripe very
++                # close to the bank bottom.  Push the data-bus channel route
++                # down by one full M3 spacing so the topmost via3/M3 pad
++                # clears the bank M3 rail by >= drc["m3_to_m3"].
++                # Verified: KLayout m3.2 = 0 after this change.
++                if OPTS.tech_name == "sky130":
++                    y_offset -= drc["m3_to_m3"]
+                 offset = vector(self.control_logic_insts[port].rx() + self.dff.width,
+                                 y_offset)
+                 cr = channel_route(netlist=route_map,

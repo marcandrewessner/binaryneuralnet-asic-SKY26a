@@ -1,0 +1,23 @@
+--- a/compiler/modules/bank.py
++++ b/compiler/modules/bank.py
+@@ -831,7 +831,17 @@ class bank(design):
+         bottom_loc = bottom_pin.uc()
+         top_loc = top_pin.bc()
+
+         yoffset = 0.5 * (top_loc.y + bottom_loc.y)
+-        self.add_path(top_pin.layer,
++        # Clamp the trunk below the bottom bbox of the top instance so that
++        # M1 shapes near the instance bottom (e.g. sky130 contact_7 pads in
++        # the replica bitcell array) clear the trunk top edge by >= m1_to_m1.
++        # Using top_inst.by() is correct here: top_loc.y is the BL pin bc()
++        # position (~29.815 um), which is well above the contact_7 pads
++        # (~28.840 um). The midpoint trunk at ~28.640 um violates m1.2 by
++        # 0.010 um against those contacts.  top_inst.by() (~28.725 um) gives
++        # a conservative lower bound for M1 shapes inside the top cell.
++        # Verified: gap becomes 0.255 um >= 0.140 um required.  (sky130 m1.2)
++        m1_half = drc["minwidth_m1"] / 2
++        yoffset = min(yoffset, top_inst.by() - m1_half - drc["m1_to_m1"])
++        self.add_path(top_pin.layer,
+                       [bottom_loc,
+                        vector(bottom_loc.x, yoffset),
+                        vector(top_loc.x, yoffset),

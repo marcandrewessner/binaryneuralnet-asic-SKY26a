@@ -1,0 +1,35 @@
+temp/
+output/
+__pycache__/
+*.pyc
+*.log
+*.gds
+*.lef
+*.sp
+*.spice
+*.lib
+*.lyrdb
+*.extracted.spice
+compiler/compiler/
+missing_pin.gds
+
+# PDK directories — installed by 'make' or volare, never committed
+ciel/
+sky130A
+sky130A/
+sky130B
+sky130B/
+skywater-pdk/
+
+# Conda environment — installed separately
+miniconda/
+
+# Generated PDK views — produced by Magic/KLayout during PDK setup
+technology/sky130/maglef_lib/
+technology/sky130/tech/setup.tcl
+sky130/xschem/
+technology/sky130/mag_lib/
+technology/sky130/tech/.magicrc
+
+# Claude Code
+CLAUDE.md
