@@ -17,7 +17,7 @@ module render_engine (
 
   output logic hsync_o,
   output logic vsync_o,
-  output logic [2:0] rgb_o,
+  output logic [2:0] rgb_o
 );
 
   logic in_active_frame, end_of_frame;

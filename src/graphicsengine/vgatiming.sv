@@ -39,7 +39,7 @@ module vgatiming #(
   localparam int VBP_COUNT = 23,
 
   localparam int HMAX = SCREEN_WIDTH+HFP_COUNT+HSYNC_COUNT+HBP_COUNT,
-  localparam int VMAX = SCREEN_HEIGHT+VFP_COUNT+VSYNC_COUNT+VBP_COUNT,
+  localparam int VMAX = SCREEN_HEIGHT+VFP_COUNT+VSYNC_COUNT+VBP_COUNT
 ) (
   input logic clk_i,
   input logic rst_ni,
@@ -50,7 +50,7 @@ module vgatiming #(
   output logic [9:0] pixel_y_o, // 10bits => 1024
 
   output logic hsync_o,
-  output logic vsync_o,
+  output logic vsync_o
 );
 
   logic in_active_frame, end_of_frame;

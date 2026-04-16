@@ -26,9 +26,9 @@ module tt_um_maw_game (
     3'b000
   };
 
-  assign uio_out = 8'0;
+  assign uio_out = '0;
   assign uio_oe = 8'b1111_1111;
 
-  assign _unused = {ena, ui_in, uio_in}
+  assign _unused = {ena, ui_in, uio_in};
 
 endmodule

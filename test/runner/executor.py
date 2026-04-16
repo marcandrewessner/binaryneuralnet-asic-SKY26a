@@ -29,7 +29,7 @@ def run_test(testmodule, fst_wave=True):
     test_module=testmodule,
     test_dir=TESTMOD_ROOT,
     waves=True,
-    results_xml="/dev/null",
+    results_xml="../results.xml", # We need it for TT test
   )
 
 def build_dumpwave(testmodule, testbench, depth=0):
