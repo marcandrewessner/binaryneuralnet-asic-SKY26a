@@ -1,0 +1,200 @@
+[
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "src/main.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/src/main.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "src/DisplayManager.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/src/DisplayManager.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "build/verilated/Vtb_tvsimulator.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/verilated/Vtb_tvsimulator.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "build/verilated/Vtb_tvsimulator__Syms__Slow.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/verilated/Vtb_tvsimulator__Syms__Slow.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "build/verilated/Vtb_tvsimulator___024root__0.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/verilated/Vtb_tvsimulator___024root__0.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "build/verilated/Vtb_tvsimulator___024root__0__Slow.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/verilated/Vtb_tvsimulator___024root__0__Slow.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "build/verilated/Vtb_tvsimulator___024root__Slow.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/verilated/Vtb_tvsimulator___024root__Slow.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "build/verilated/Vtb_tvsimulator___024unit__0__Slow.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/verilated/Vtb_tvsimulator___024unit__0__Slow.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "build/verilated/Vtb_tvsimulator___024unit__Slow.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/verilated/Vtb_tvsimulator___024unit__Slow.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include/verilated.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include/verilated.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  },
+  {
+    "arguments": [
+      "/nix/store/rk5r4s9afkazgj0py9m9miv4c7iqjfwj-devshell-dir/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Ibuild/verilated",
+      "-I/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include",
+      "-Isrc",
+      "-I/nix/store/h5h1zyg22raqczgxizlcsw5vr5bi8lll-sdl2-compat-2.32.58-dev/include",
+      "-D_THREAD_SAFE",
+      "-o",
+      "build/tvsimulator",
+      "/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include/verilated_threads.cpp"
+    ],
+    "directory": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator",
+    "file": "/nix/store/p4garpar07q0j660cyz7lmcylkn79i0q-verilator-5.044/share/verilator/include/verilated_threads.cpp",
+    "output": "/Users/marcandre/Desktop/Startup/binaryneuralnet-asic-TTSKY26a/tvsimulator/build/tvsimulator"
+  }
+]

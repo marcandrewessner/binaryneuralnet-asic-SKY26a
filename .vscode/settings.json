@@ -1,6 +1,7 @@
 {
   "verilog.linting.linter": "verilator",
   "verilog.formatting.verilogHDL.formatter": "verible-verilog-format",
-  "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix",
-  "python-envs.defaultEnvManager": "ms-python.python:system"
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "nixEnvSelector.suggestion": false,
+  "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix"
 }

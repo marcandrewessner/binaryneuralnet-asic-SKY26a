@@ -39,11 +39,25 @@ module render_engine (
 
   // Now we build stripes
   logic r;
-  logic g;
+  assign r = pixel_x==10'(position_counter_q) && (pixel_y>=10 && pixel_y<15);
 
-  assign r = pixel_x[3];
+  assign rgb = {r, r, r} & {3{in_active_frame}};
+  assign rgb_o = rgb;
 
-  assign g = ~r;
-  assign rgb = {r, g, 0} & {3{in_active_frame}};
+  int unsigned position_counter_d, position_counter_q;
+  
+  always_comb begin
+    position_counter_d = position_counter_q+1;
+    if(position_counter_d==SCREEN_WIDTH)
+      position_counter_d = 0;
+  end
+
+  always_ff @(posedge end_of_frame or negedge rst_ni) begin
+    if(!rst_ni) begin
+      position_counter_q <= 0;
+    end else begin
+      position_counter_q <= position_counter_d;
+    end
+  end
 
 endmodule

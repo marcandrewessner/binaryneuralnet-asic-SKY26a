@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "name": "nix",
+      "compileCommands": "${workspaceFolder}/tvsimulator/compile_commands.json",
+      "intelliSenseMode": "macos-clang-arm64"
+    }
+  ],
+  "version": 4
+}

@@ -55,16 +55,16 @@ Frame Memory (Kbits)
 import graphic_consts::*;
 
 module vgatiming #(
-  localparam int HFP_COUNT = 16,
-  localparam int HSYNC_COUNT = 96,
-  localparam int HBP_COUNT = 48,
+  localparam int unsigned HFP_COUNT = 16,
+  localparam int unsigned HSYNC_COUNT = 96,
+  localparam int unsigned HBP_COUNT = 48,
 
-  localparam int VFP_COUNT = 10,
-  localparam int VSYNC_COUNT = 2,
-  localparam int VBP_COUNT = 33,
+  localparam int unsigned VFP_COUNT = 10,
+  localparam int unsigned VSYNC_COUNT = 2,
+  localparam int unsigned VBP_COUNT = 33,
 
-  localparam int HMAX = SCREEN_WIDTH+HFP_COUNT+HSYNC_COUNT+HBP_COUNT - 1,
-  localparam int VMAX = SCREEN_HEIGHT+VFP_COUNT+VSYNC_COUNT+VBP_COUNT - 1
+  localparam int unsigned HMAX = SCREEN_WIDTH+HFP_COUNT+HSYNC_COUNT+HBP_COUNT - 1,
+  localparam int unsigned VMAX = SCREEN_HEIGHT+VFP_COUNT+VSYNC_COUNT+VBP_COUNT - 1
 ) (
   input logic clk_i,
   input logic rst_ni,
@@ -80,21 +80,18 @@ module vgatiming #(
 
   logic pix_clk;
 
+  int unsigned pixel_x, pixel_y;
+  int unsigned horizontal_counter_d, horizontal_counter_q;
+  int unsigned vertical_counter_d, vertical_counter_q;
   logic in_active_frame, end_of_frame;
-  logic [9:0] pixel_x, pixel_y;
   logic hsync, vsync;
 
-  logic [9:0] horizontal_counter_d, horizontal_counter_q;
-  logic [9:0] vertical_counter_d, vertical_counter_q;
-
-  assign pixel_x_o = pixel_x;
-  assign pixel_y_o = pixel_y;
-  assign end_of_frame_o = end_of_frame;
-  assign in_active_frame_o = in_active_frame;
-
-  // Active low
+  assign pixel_x_o = 10'(pixel_x);
+  assign pixel_y_o = 10'(pixel_y);
   assign hsync_o = ~hsync;
   assign vsync_o = ~vsync;
+  assign end_of_frame_o = end_of_frame;
+  assign in_active_frame_o = in_active_frame;
 
   always_comb begin
     horizontal_counter_d = (horizontal_counter_q==HMAX) ? 0 : horizontal_counter_q + 1;

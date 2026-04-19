@@ -14,7 +14,7 @@ in
 pkgs.mkShell {
   inputsFrom = [
     (pkgs.librelane-shell.override {
-      extra-packages = with pkgs; [ gnumake ];
+      extra-packages = with pkgs; [ gnumake bear gcc SDL2 SDL2.dev ];
       extra-python-packages =
         ps: with ps; [
           cocotb

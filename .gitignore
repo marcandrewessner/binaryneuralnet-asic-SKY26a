@@ -1,5 +1,6 @@
 .DS_Store
 .idea
+.claude
 *.vcd
 *.fst
 *.fst.hier
@@ -18,3 +19,6 @@ test/gate_level_netlist.v
 /tt/
 /ttsetup/venv
 /ttsetup/pdk
+
+# Ignore the build output of the tvsimulator
+/tvsimulator/build/
