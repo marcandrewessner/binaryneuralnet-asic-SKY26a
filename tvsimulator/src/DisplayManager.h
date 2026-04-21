@@ -15,6 +15,11 @@ public:
   
   struct InputEvents{
     bool quit;
+    bool btn_down;
+    bool btn_up;
+    bool btn_left;
+    bool btn_right;
+    bool btn_action;
   };
 
   DisplayManager();

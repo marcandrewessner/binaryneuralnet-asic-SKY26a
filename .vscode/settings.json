@@ -3,5 +3,6 @@
   "verilog.formatting.verilogHDL.formatter": "verible-verilog-format",
   "python-envs.defaultEnvManager": "ms-python.python:system",
   "nixEnvSelector.suggestion": false,
-  "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix"
+  "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix",
+   "verilog.linting.verilator.arguments": "-f .vscode/vscode_verilator_src.f"
 }

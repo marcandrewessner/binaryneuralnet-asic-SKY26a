@@ -52,9 +52,7 @@ Frame Memory (Kbits)
 
 `default_nettype none
 
-import graphic_consts::*;
-
-module vgatiming #(
+module vgatiming import graphics_engine_pkg::*; #(
   localparam int unsigned HFP_COUNT = 16,
   localparam int unsigned HSYNC_COUNT = 96,
   localparam int unsigned HBP_COUNT = 48,
@@ -71,14 +69,14 @@ module vgatiming #(
 
   output logic in_active_frame_o,
   output logic end_of_frame_o,
-  output logic [9:0] pixel_x_o, // 10bits => 1024
-  output logic [9:0] pixel_y_o, // 10bits => 1024
+  output pix_coord_t pixel_x_o, // 10bits => 1024
+  output pix_coord_t pixel_y_o, // 10bits => 1024
 
   output logic hsync_o,
   output logic vsync_o
 );
 
-  logic pix_clk;
+  logic pix_clk_en;
 
   int unsigned pixel_x, pixel_y;
   int unsigned horizontal_counter_d, horizontal_counter_q;
@@ -110,23 +108,23 @@ module vgatiming #(
     end_of_frame = (vertical_counter_q==SCREEN_HEIGHT) && (horizontal_counter_q==SCREEN_WIDTH+1); 
   end
 
-  // Important to Note: this is running at pixelclock
-  always_ff @(posedge pix_clk or negedge rst_ni) begin
+  // Generate pixel clock enable: divide clk_i by 2 (50MHz -> 25MHz)
+  always_ff @(posedge clk_i or negedge rst_ni) begin
+    if (!rst_ni)
+      pix_clk_en <= 0;
+    else
+      pix_clk_en <= ~pix_clk_en;
+  end
+
+  // Counters advance every other clk_i cycle (at pixel clock rate)
+  always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
       horizontal_counter_q <= 0;
       vertical_counter_q <= 0;
-    end else begin
+    end else if (pix_clk_en) begin
       horizontal_counter_q <= horizontal_counter_d;
       vertical_counter_q <= vertical_counter_d;
     end
-  end
-
-  // Generate the pixelclock just divide by two 50MHz/2 = 25MHz
-  always_ff @(posedge clk_i or negedge rst_ni) begin
-    if(!rst_ni)
-      pix_clk <= 0;
-    else
-      pix_clk <= ~pix_clk;
   end
 
 endmodule

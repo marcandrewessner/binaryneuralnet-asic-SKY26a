@@ -19,16 +19,34 @@ module tt_um_maw_game (
   // Define the screen signals
   logic hsync, vsync;
   logic [2:0] rgb;
+  // Define the button inputs (already debounced)
+  logic btn_up, btn_down, btn_left, btn_right, btn_action;
 
-  assign uo_out = {
-    hsync, vsync,
-    rgb,
-    3'b000
-  };
+  assign btn_up = ui_in[7];
+  assign btn_down = ui_in[6];
+  assign btn_left = ui_in[5];
+  assign btn_right = ui_in[4];
+  assign btn_action = ui_in[3];
+
+  assign uo_out = {hsync, vsync, rgb, 3'b000};
 
   assign uio_out = '0;
   assign uio_oe = 8'b1111_1111;
 
-  assign _unused = {ena, ui_in, uio_in};
+  logic _unused;
+  assign _unused = &{ena, uio_in};
+
+  maw_main i_maw_main(
+    .clk_i(clk),
+    .rst_ni(rst_n),
+    .btn_up_i(btn_up),
+    .btn_down_i(btn_down),
+    .btn_right_i(btn_right),
+    .btn_left_i(btn_left),
+    .btn_action_i(btn_action),
+    .hsync_o(hsync),
+    .vsync_o(vsync),
+    .rgb_o(rgb)
+  );
 
 endmodule

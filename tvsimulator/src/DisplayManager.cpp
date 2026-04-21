@@ -1,4 +1,3 @@
-
 #include "DisplayManager.h"
 
 #include <SDL2/SDL.h>
@@ -50,8 +49,19 @@ void DisplayManager::renderFrame(const std::unique_ptr<uint32_t[]>& f){
 
 void DisplayManager::processEvents(){
   SDL_Event event;
+
+  inputEvents.quit = false;
+
   while(SDL_PollEvent(&event)){
     if(event.type == SDL_QUIT)
       inputEvents.quit = true;
   }
+
+  const Uint8* state = SDL_GetKeyboardState(NULL);
+
+  inputEvents.btn_up = state[SDL_SCANCODE_W];
+  inputEvents.btn_left = state[SDL_SCANCODE_A];
+  inputEvents.btn_down = state[SDL_SCANCODE_S];
+  inputEvents.btn_right = state[SDL_SCANCODE_D];
+  inputEvents.btn_action = state[SDL_SCANCODE_SPACE];
 }

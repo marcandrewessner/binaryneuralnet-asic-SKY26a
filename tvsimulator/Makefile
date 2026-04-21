@@ -16,16 +16,28 @@ endif
 VERILATOR_ROOT ?= $(shell verilator --getenv VERILATOR_ROOT)
 VINC            := $(VERILATOR_ROOT)/include
 
-SV_FILES := src/tb_tvsimulator.sv $(shell find ../src -name "*.sv")
+SOURCE_FILES := src/tb_tvsimulator.sv $(shell find ../src -name "*.sv")
+FLIST_FILE   := $(BUILD)/source.f
+
+PKGS := $(filter %_pkg.sv,$(SOURCE_FILES))
+SRCS := $(filter-out %_pkg.sv,$(SOURCE_FILES))
+FLIST := $(PKGS) $(SRCS)
+
+# ── Step 0: Source files .f ───────────────────────────────────────────────────
+# Simple rule: packages > then source files
+$(FLIST_FILE): $(SOURCE_FILES)
+	@mkdir -p $(BUILD)
+	@printf '%s\n' $(FLIST) > $@
+
 
 # ── Step 1: Verilate ──────────────────────────────────────────────────────────
 # Run verilator --cc to produce C++ model files and the generated header
 # V$(TOP).h under $(VERILATED)/.
-$(VERILATED)/V$(TOP).h: $(SV_FILES)
+$(VERILATED)/V$(TOP).h: $(FLIST_FILE)
 	@mkdir -p $(VERILATED)
 	verilator --cc -j 0 --O3 \
-	    $(SV_FILES) \
-			--timing \
+	    -f $(FLIST_FILE) \
+	    --x-assign fast --x-initial fast \
 	    --top-module $(TOP) \
 	    -Mdir $(VERILATED)
 

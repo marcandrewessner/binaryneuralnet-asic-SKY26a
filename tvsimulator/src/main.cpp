@@ -1,6 +1,7 @@
 #include "Vtb_tvsimulator.h"
 #include "verilated.h"
 
+#include <chrono>
 #include <cstdio>
 #include <memory>
 #include <SDL2/SDL.h>
@@ -24,6 +25,7 @@ double sc_time_stamp(){ return 0; }
 // Define helper functions
 void advance_one_pixel(Vtb_tvsimulator* dut);
 void advance_n_pixels(Vtb_tvsimulator* dut, unsigned int npixels);
+void fullspeed_testing(Vtb_tvsimulator* dut);
 
 int main(int argc, char** argv) {
   VerilatedContext* ctx = new VerilatedContext;
@@ -41,6 +43,7 @@ int main(int argc, char** argv) {
   }
   
   printf("Current clock before display: %d", dut->clk);
+  printf("Use WASD for arrow keys and space for action!");
 
   // Open the window
   DisplayManager display;
@@ -111,6 +114,11 @@ int main(int argc, char** argv) {
         frame_count = 0;
         last_ticks = now;
       }
+      dut->btn_up = display.getInputEvents().btn_up ? 1 : 0;
+      dut->btn_down = display.getInputEvents().btn_down ? 1 : 0;
+      dut->btn_left = display.getInputEvents().btn_left ? 1 : 0;
+      dut->btn_right = display.getInputEvents().btn_right ? 1 : 0;
+      dut->btn_action = display.getInputEvents().btn_action ? 1 : 0;
     }
   }
   
@@ -132,4 +140,33 @@ void advance_one_pixel(Vtb_tvsimulator* dut){
 void advance_n_pixels(Vtb_tvsimulator* dut, unsigned int npixels){
   for(unsigned int i=0; i<npixels; i++)
     advance_one_pixel(dut);
+}
+
+void fullspeed_testing(Vtb_tvsimulator* dut){
+  using Clock = std::chrono::high_resolution_clock;
+  constexpr uint64_t REPORT_INTERVAL = 10'000'000; // cycles between prints
+
+  printf("=== fullspeed_testing: measuring simulator clock rate ===\n");
+  printf("Press Ctrl+C to stop.\n");
+
+  uint64_t total_cycles = 0;
+  uint64_t countdown = REPORT_INTERVAL;
+  auto t_start = Clock::now();
+
+  while(true){
+    dut->clk = 1;
+    dut->eval();
+    dut->clk = 0;
+    dut->eval();
+    total_cycles++;
+
+    if(--countdown == 0){
+      countdown = REPORT_INTERVAL;
+      auto t_now = Clock::now();
+      double elapsed_s = std::chrono::duration<double>(t_now - t_start).count();
+      double avg_mhz = total_cycles / elapsed_s / 1e6;
+      printf("cycles=%-12lu  elapsed=%.3fs  avg freq=%.2f MHz\n",
+             (unsigned long)total_cycles, elapsed_s, avg_mhz);
+    }
+  }
 }
