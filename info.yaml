@@ -8,7 +8,7 @@ project:
   clock_hz:     0       # Clock frequency in Hz (or 0 if not applicable)
 
   # How many tiles your design occupies? A single tile is about 167x108 uM.
-  tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
+  tiles: "3x2"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
   top_module:  "tt_um_maw_game"
@@ -17,7 +17,15 @@ project:
   # Source files must be in ./src and you must list each source file separately, one per line.
   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
-    - "project.v"
+    - "project.sv"
+    - "graphics_engine/graphics_engine_pkg.sv"
+    - "graphics_rom/graphics_rom_pkg.sv"
+    - "graphics_rom/ghost_sprite.sv"
+    - "graphics_rom/ghost_sprite_generated.sv"
+    - "graphics_rom/crosshair_sprite.sv"
+    - "graphics_engine/render_engine.sv"
+    - "graphics_engine/vgatiming.sv"
+    - "main.sv"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).

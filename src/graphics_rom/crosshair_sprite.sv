@@ -46,6 +46,6 @@ module crosshair_sprite
   logic white;
   assign white = cross_active || (outerbox_active && ~innerbox_active);
 
-  assign sprite_output.color = '{~white, 3{white}};
+  assign sprite_output.color = {~white, {3{white}}};
 
 endmodule
