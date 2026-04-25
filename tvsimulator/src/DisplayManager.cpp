@@ -51,10 +51,13 @@ void DisplayManager::processEvents(){
   SDL_Event event;
 
   inputEvents.quit = false;
+  inputEvents.btn_reset = false;
 
   while(SDL_PollEvent(&event)){
     if(event.type == SDL_QUIT)
       inputEvents.quit = true;
+    if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_r)
+      inputEvents.btn_reset = true;
   }
 
   const Uint8* state = SDL_GetKeyboardState(NULL);

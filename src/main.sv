@@ -1,5 +1,8 @@
 
-module maw_main import graphics_engine_pkg::*; (
+module maw_main
+  import graphics_engine_pkg::*;
+  import game_logic_pkg::*;
+(
   input  logic       clk_i,
   input  logic       rst_ni,
 
@@ -15,11 +18,16 @@ module maw_main import graphics_engine_pkg::*; (
 );
 
   logic end_of_frame;
-  pix_coord_t cross_x_d, cross_x_q;
-  pix_coord_t cross_y_d, cross_y_q;
-  pix_pos_t cross_pos;
-  assign cross_pos.x = cross_x_q;
-  assign cross_pos.y = cross_y_q;
+ 
+  // Crosshair
+  game_pos_t crosshair_pos;
+  pix_pos_t crosshair_pos_pix;
+  assign crosshair_pos_pix = game2pix_pos_transformation(crosshair_pos);
+
+  // Enemy
+  game_pos_t enemy_pos;
+  pix_pos_t enemy_pos_pix;
+  assign enemy_pos_pix = game2pix_pos_transformation(enemy_pos);
 
   render_engine i_render_engine (
     .clk_i(clk_i),
@@ -28,26 +36,30 @@ module maw_main import graphics_engine_pkg::*; (
     .hsync_o(hsync_o),
     .vsync_o(vsync_o),
     .rgb_o(rgb_o),
-
-    .cross_pos_i(cross_pos)
+    .cross_pos_i(crosshair_pos_pix),
+    .ghost_pos_i(enemy_pos_pix)
   );
 
-  localparam pix_coord_t MOVEMENT_SPEED = 3;
+  crosshair_control i_crosshair_control (
+    .clk_i(clk_i),
+    .rst_ni(rst_ni),
+    .clk_virt_i(end_of_frame),
+    .btn_up_i(btn_up_i),
+    .btn_down_i(btn_down_i),
+    .btn_right_i(btn_right_i),
+    .btn_left_i(btn_left_i),
+    .btn_action_i(btn_action_i),
+    .pos_o(crosshair_pos)
+  );
 
-  // Now react
-  always_comb begin
-    cross_x_d = cross_x_q + (btn_right_i ? MOVEMENT_SPEED : 0) - (btn_left_i ? MOVEMENT_SPEED : 0);
-    cross_y_d = cross_y_q - (btn_up_i    ? MOVEMENT_SPEED : 0) + (btn_down_i ? MOVEMENT_SPEED : 0);
-  end
-
-  always_ff @(posedge clk_i or negedge rst_ni) begin
-    if(!rst_ni) begin
-      cross_x_q <= 100;
-      cross_y_q <= 100;
-    end else if (end_of_frame) begin
-      cross_x_q <= cross_x_d;
-      cross_y_q <= cross_y_d;
-    end
-  end
+  localparam game_pos_t ENEMY_RST_POS = game_pos_t'{x:200, y:300};
+  enemy_movement i_enemy_movement (
+    .clk_i(clk_i),
+    .rst_ni(rst_ni),
+    .clk_virt_i(end_of_frame),
+    .rst_position_i(ENEMY_RST_POS),
+    .rtl_i(1),
+    .enemy_position_o(enemy_pos)
+  );
 
 endmodule

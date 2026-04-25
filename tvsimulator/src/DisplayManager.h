@@ -20,6 +20,7 @@ public:
     bool btn_left;
     bool btn_right;
     bool btn_action;
+    bool btn_reset;
   };
 
   DisplayManager();

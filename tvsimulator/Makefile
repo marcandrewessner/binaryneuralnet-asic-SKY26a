@@ -37,6 +37,7 @@ $(VERILATED)/V$(TOP).h: $(FLIST_FILE)
 	@mkdir -p $(VERILATED)
 	verilator --cc -j 0 --O3 \
 	    -f $(FLIST_FILE) \
+	    -I../src/macros \
 	    --x-assign fast --x-initial fast \
 	    --top-module $(TOP) \
 	    -Mdir $(VERILATED)

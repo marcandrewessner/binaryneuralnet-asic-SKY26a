@@ -1,8 +1,19 @@
 {
   "verilog.linting.linter": "verilator",
+  "verilog.linting.verilator.arguments": "-f .vscode/vscode_verilator_src.f",
+  "verilog.linting.verilator.useFileList": true,
+  "verilog.linting.verilator.includePath": ["src/macros"],
+
   "verilog.formatting.verilogHDL.formatter": "verible-verilog-format",
+  "verilog.formatting.systemVerilog.formatter": "verible-verilog-format",
+  "verilog.formatting.veribleVerilogFormatter.path": "verible-verilog-format",
+  "verilog.formatting.veribleVerilogFormatter.arguments": "--assignment_statement_alignment=align --named_parameter_alignment=align --named_port_alignment=align --port_declarations_alignment=align --formal_parameters_alignment=align --module_net_variable_alignment=align",
+
+  "[systemverilog]": {
+    "editor.formatOnSave": false
+  },
+
   "python-envs.defaultEnvManager": "ms-python.python:system",
   "nixEnvSelector.suggestion": false,
-  "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix",
-   "verilog.linting.verilator.arguments": "-f .vscode/vscode_verilator_src.f"
+  "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix"
 }

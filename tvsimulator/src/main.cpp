@@ -105,6 +105,13 @@ int main(int argc, char** argv) {
     // If the whole frame is captured we draw it on screen
     if(end_of_frame){
       display.processEvents();
+      if(display.getInputEvents().btn_reset){
+        dut->rst_n = 0;
+        for(int i = 0; i < 8; i++){ dut->clk ^= 1; dut->eval(); }
+        dut->rst_n = 1;
+        vga_pos_x = 0;
+        vga_pos_y = 0;
+      }
       display.renderFrame(frame);
       frame_count++;
       uint64_t now = SDL_GetTicks64();
